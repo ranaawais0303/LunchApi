@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const userRouter = require("./routes/userRoutes");
+const AppError = require("./utils/appError");
 
 ///Server startup
 const app = express();
@@ -14,4 +16,17 @@ app.use(
   })
 );
 //
+////express.json is middleware////
+//Body parser, reading data form body into req.body
+app.use(express.json({ limit: "10kb" }));
+
+//Mounting the router
+app.use("/api/users", userRouter);
+
+//unhandled url or route came from moslty catchAsync
+app.all("*", (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+});
+
+//////
 module.exports = app;

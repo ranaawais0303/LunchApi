@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -38,14 +39,17 @@ const userSchema = new mongoose.Schema({
       message: "Confirm Password ({VALUE}) should be  Equal to  password",
     },
   },
-  passwordChangedAt: Date,
+  //   passwordChangedAt: Date,
 
-  passwordResetToken: String,
-  passwordResetExpires: Date,
+  //   passwordResetToken: String,
+  //   passwordResetExpires: Date,
 
-  active: {
-    type: Boolean,
-    default: true,
-    select: false,
-  },
+  //   active: {
+  //     type: Boolean,
+  //     default: true,
+  //     select: false,
+  //   },
 });
+
+const User = mongoose.model("users", userSchema);
+module.exports = User;
