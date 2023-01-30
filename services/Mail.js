@@ -1,19 +1,17 @@
 const nodemailer = require("nodemailer");
+const dotenv = require(`dotenv`);
+
+/////set environment variables here
+dotenv.config({ path: "config.env" });
 const { MAIL_EMAIL, MAIL_PASSWORD } = process.env;
+console.log(MAIL_EMAIL, ".....", MAIL_PASSWORD);
 const MAIL_SETTINGS = {
   service: "gmail",
   host: "smtp.gmail.com",
-  port: 2525,
-  //   secure: true,
   auth: {
-    user: "r.awais@pionlog.com",
-    pass: "pddryjrhijezyagv",
+    user: MAIL_EMAIL,
+    pass: MAIL_PASSWORD,
   },
-  //   host: "smtp.gmail.com",
-  //   auth: {
-  //     user: MAIL_EMAIL,
-  //     pass: MAIL_PASSWORD,
-  //   },
 };
 const transporter = nodemailer.createTransport(MAIL_SETTINGS);
 
