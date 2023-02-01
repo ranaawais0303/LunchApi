@@ -5,14 +5,14 @@ const { generateOTP } = require("../services/otp");
 const { sendMail } = require("../services/Mail");
 //SignUp User
 exports.signup = catchAsync(async (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   const isExisting = await findUserByEmail(email);
   if (isExisting) {
-    return res.send("Already existing");
+    return res.status(409).send({ message: "Already existing" });
   }
 
   //create new user
-  const newUser = await createUser(email, password, confirmPassword);
+  const newUser = await createUser(firstName, lastName, email, password);
   if (!newUser[0]) {
     return res.status(400).send({
       message: "Unable to create new user",
@@ -22,12 +22,15 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 /////create user function
-const createUser = async (email, password, confirmPassword) => {
+const createUser = async (firstName, lastName, email, password) => {
   const otpGenerated = generateOTP();
+
   const newUser = await User.create({
-    email,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
     password: password,
-    confirmPassword: confirmPassword,
+
     otp: otpGenerated,
   });
   if (!newUser) {
