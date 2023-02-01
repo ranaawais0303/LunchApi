@@ -50,7 +50,7 @@ const createUser = async (firstName, lastName, email, password) => {
 /////////varify email
 module.exports.verifyEmail = async (req, res) => {
   const { email, otp } = req.body;
-  const user = await validateUserSignUp(email, otp, res);
+  const user = await validateUserSignUp(email, otp);
   if (user[0]) {
     res.send(user);
   } else {
@@ -69,7 +69,7 @@ const findUserByEmail = async (email) => {
 };
 
 ///validate function
-const validateUserSignUp = async (email, otp, res) => {
+const validateUserSignUp = async (email, otp) => {
   const user = await User.findOne({
     email,
   });
