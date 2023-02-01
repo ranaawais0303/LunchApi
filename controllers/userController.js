@@ -50,8 +50,12 @@ const createUser = async (firstName, lastName, email, password) => {
 /////////varify email
 module.exports.verifyEmail = async (req, res) => {
   const { email, otp } = req.body;
-  const user = await validateUserSignUp(email, otp);
-  res.send(user);
+  const user = await validateUserSignUp(email, otp, res);
+  if (user[0]) {
+    res.send(user);
+  } else {
+    res.status(404).send(user);
+  }
 };
 
 const findUserByEmail = async (email) => {
@@ -65,14 +69,17 @@ const findUserByEmail = async (email) => {
 };
 
 ///validate function
-const validateUserSignUp = async (email, otp) => {
+const validateUserSignUp = async (email, otp, res) => {
   const user = await User.findOne({
     email,
   });
   if (!user) {
+    // res.status(404).send({ status: false, message: "User not found" });
     return [false, "User not found"];
-  }
-  if (user && user.otp !== otp) {
+  } else if (user && user.otp !== otp) {
+    console.log("otp not available");
+    // res.status(401).send({ status: false, message: "Invalid attept" });
+
     return [false, "Invalid OTP"];
   }
   const updatedUser = await User.findByIdAndUpdate(user._id, {
