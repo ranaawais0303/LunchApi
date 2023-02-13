@@ -20,31 +20,8 @@ const signToken = (id) => {
   );
 };
 
-//Login existing user
-exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+/////////////////////     SignUp User    ///////////////////////////
 
-  //1) Check if email and password exist
-  if (!email || !password) {
-    return next(new AppError("Please provide email and password", 400));
-  }
-
-  //2)Check if user exist && password is correct
-  const user = await User.findOne({ email }).select("+password");
-
-  if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError("Incorrect email or password", 401));
-  }
-
-  //3)if everthing ok, send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: "Success",
-    token,
-  });
-});
-
-//SignUp User
 exports.signup = catchAsync(async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
   const isExisting = await findUserByEmail(email);
@@ -86,17 +63,6 @@ const createUser = async (firstName, lastName, email, password) => {
   }
 };
 
-/////////varify email
-module.exports.verifyEmail = async (req, res, next) => {
-  const { email, otp } = req.body;
-  const user = await validateUserSignUp(email, otp);
-  if (user[0]) {
-    res.send(user);
-  } else {
-    res.status(404).send(user);
-  }
-};
-
 const findUserByEmail = async (email) => {
   const user = await User.findOne({
     email,
@@ -107,17 +73,48 @@ const findUserByEmail = async (email) => {
   return user;
 };
 
+//////////////////////////   Resend OTP      //////////////////////////
+exports.resendOTP = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  const otpGenerated = generateOTP();
+
+  const user = await User.findOne({
+    email,
+  });
+  const updatedUserOtp = await User.findByIdAndUpdate(user._id, {
+    $set: { otp: otpGenerated },
+  });
+  try {
+    await sendMail({
+      to: email,
+      OTP: otpGenerated,
+    });
+    res.send(updatedUserOtp);
+  } catch (error) {
+    return next(new AppError("Bad Network", 404));
+  }
+});
+/////////////////////////    varify email   //////////////////////////
+/////////
+module.exports.verifyEmail = async (req, res, next) => {
+  const { email, otp } = req.body;
+  const user = await validateUserSignUp(email, otp);
+  if (user[0]) {
+    res.send(user);
+  } else {
+    res.status(404).send(user);
+  }
+};
+
 ///validate function
 const validateUserSignUp = async (email, otp) => {
   const user = await User.findOne({
     email,
   });
   if (!user) {
-    // res.status(404).send({ status: false, message: "User not found" });
     return [false, "User not found"];
   } else if (user && user.otp !== otp) {
     console.log("otp not available");
-    // res.status(401).send({ status: false, message: "Invalid attept" });
 
     return [false, "Invalid OTP"];
   }
@@ -127,8 +124,7 @@ const validateUserSignUp = async (email, otp) => {
   return [true, updatedUser];
 };
 
-////////////////////////////////////////
-//LOGIN EXISTING USER
+///////////////////     LOGIN EXISTING USER   /////////////////////
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -139,9 +135,20 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //2)Check if user exist && password is correct
   const user = await User.findOne({ email }).select("+password");
+  const otpAvailable = await User.findOne({ email });
+  // console.log(otpAvailable.active, "........................");
+  console.log(user.active, "===================");
+  const active = user.active;
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
+  }
+  if (
+    user &&
+    (await user.correctPassword(password, user.password)) &&
+    active === false
+  ) {
+    return next(new AppError("Please varify your account ", 422));
   }
 
   //3)if everthing ok, send token to client
