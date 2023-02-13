@@ -170,6 +170,10 @@ exports.forgotPass = catchAsync(async (req, res, next) => {
   const user = await User.findOne({
     email,
   });
+  // .select("+password");
+  if (!user) {
+    return next(new AppError("No user is available with this email", 401));
+  }
   const updatedUserPassword = await User.findByIdAndUpdate(user._id, {
     $set: { password: incryptedPassword },
   });
