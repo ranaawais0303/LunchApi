@@ -5,6 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const { generateOTP } = require("../services/otp");
 const { sendMail } = require("../services/Mail");
 const AppError = require("../utils/appError");
+const bcrypt = require("bcryptjs");
 
 //////////////////////////////////////////////
 //Create token/////
@@ -88,6 +89,8 @@ exports.resendOTP = catchAsync(async (req, res, next) => {
     await sendMail({
       to: email,
       OTP: otpGenerated,
+      title: "You are officially In ✔",
+      message: "Please enter the sign up OTP to get started",
     });
     res.send(updatedUserOtp);
   } catch (error) {
@@ -135,8 +138,6 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //2)Check if user exist && password is correct
   const user = await User.findOne({ email }).select("+password");
-  const otpAvailable = await User.findOne({ email });
-  // console.log(otpAvailable.active, "........................");
   console.log(user.active, "===================");
   const active = user.active;
 
@@ -158,3 +159,38 @@ exports.login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+/////////////////////   FORGOT PASSWORD   ///////////////////////////////
+exports.forgotPass = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  const otpGenerated = generateOTP();
+
+  const incryptedPassword = await bcrypt.hash(otpGenerated, 12);
+
+  const user = await User.findOne({
+    email,
+  });
+  const updatedUserPassword = await User.findByIdAndUpdate(user._id, {
+    $set: { password: incryptedPassword },
+  });
+  try {
+    await sendMail({
+      to: email,
+      OTP: otpGenerated,
+      title: "Forgot Password",
+      message:
+        "Please enter this password in password field to change the password",
+    });
+    res.send(updatedUserPassword);
+  } catch (error) {
+    return next(new AppError("Bad Network", 404));
+  }
+});
+
+///////////////////   Update Password   ////////////////////////////////
+// const updatePassword = async (email) => {
+//   const user = User.findOne(email);
+//   if (!user) {
+//     return [false, "No user found"];
+//   }
+// };
