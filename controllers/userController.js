@@ -177,6 +177,9 @@ exports.forgotPass = catchAsync(async (req, res, next) => {
   const updatedUserPassword = await User.findByIdAndUpdate(user._id, {
     $set: { password: incryptedPassword },
   });
+  await User.findByIdAndUpdate(user._id, {
+    $set: { forgot: true },
+  });
   try {
     await sendMail({
       to: email,
@@ -185,6 +188,7 @@ exports.forgotPass = catchAsync(async (req, res, next) => {
       message:
         "Please enter this password in password field to change the password",
     });
+
     res.send(updatedUserPassword);
   } catch (error) {
     return next(new AppError("Bad Network", 404));
@@ -192,9 +196,25 @@ exports.forgotPass = catchAsync(async (req, res, next) => {
 });
 
 ///////////////////   Update Password   ////////////////////////////////
-// const updatePassword = async (email) => {
-//   const user = User.findOne(email);
-//   if (!user) {
-//     return [false, "No user found"];
-//   }
-// };
+exports.changePassword = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+  const incryptedPassword = await bcrypt.hash(password, 12);
+
+  const user = await User.findOne({
+    email,
+  });
+  await User.findByIdAndUpdate(user._id, {
+    $set: { forgot: false },
+  });
+  if (!user) {
+    return next(new AppError("No user is available with this email", 401));
+  }
+  const updatedUserPassword = await User.findByIdAndUpdate(user._id, {
+    $set: { password: incryptedPassword },
+  });
+  try {
+    res.send(updatedUserPassword);
+  } catch (err) {
+    return next(new AppError("Bad Network", 404));
+  }
+});
