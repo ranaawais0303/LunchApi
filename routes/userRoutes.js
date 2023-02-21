@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/signup", userController.signup);
 router.post("/signup/varify", userController.verifyEmail);
 router.post("/login", userController.login);
+router.get("/tokenVarify", userController.tokenVerify);
 router.post("/signup/resendOTP", userController.resendOTP);
 router.post("/forgotPassword", userController.forgotPass);
 router.post("/changePassword", userController.changePassword);

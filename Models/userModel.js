@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  // tokenExp: {
+  //   type: Date,
+  //   default: new Date().toISOString(),
+  // },
   active: {
     type: Boolean,
     default: false,
