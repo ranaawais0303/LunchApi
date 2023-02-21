@@ -12,8 +12,8 @@ const bcrypt = require("bcryptjs");
 //////////////////////////////////////////////
 //Create token/////
 const secret = process.env.JWT_SECRET;
-const expireTime = process.env.JWT_EXPIRES_IN;
 const signToken = (id) => {
+  const expireTime = process.env.JWT_EXPIRES_IN;
   return jwt.sign(
     {
       id,
@@ -178,6 +178,8 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email }).select("+password");
   console.log(user.active, "===================");
   const active = user.active;
+  process.env.JWT_EXPIRES_IN = user.tokenExp;
+  console.log(process.env.JWT_EXPIRES_IN, "now this is the new expire time");
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
