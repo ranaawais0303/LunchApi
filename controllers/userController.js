@@ -77,6 +77,14 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 /////create user function
+async function sendotp(email, otpGenerated) {
+  sendMail({
+    to: email,
+    OTP: otpGenerated,
+    title: "You are officially In ✔",
+    message: "Please enter the sign up OTP to get started",
+  });
+}
 const createUser = async (firstName, lastName, email, password) => {
   const otpGenerated = generateOTP();
 
@@ -92,10 +100,7 @@ const createUser = async (firstName, lastName, email, password) => {
     return [false, "Unable to sign you up"];
   }
   try {
-    await sendMail({
-      to: email,
-      OTP: otpGenerated,
-    });
+    await sendotp(email, otpGenerated);
     return [true, newUser];
   } catch (error) {
     return [false, "Unable to sign up, Please try again later", error];
@@ -124,12 +129,7 @@ exports.resendOTP = catchAsync(async (req, res, next) => {
     $set: { otp: otpGenerated },
   });
   try {
-    await sendMail({
-      to: email,
-      OTP: otpGenerated,
-      title: "You are officially In ✔",
-      message: "Please enter the sign up OTP to get started",
-    });
+    await sendotp(email, otpGenerated);
     res.send(updatedUserOtp);
   } catch (error) {
     return next(new AppError("Bad Network", 404));
