@@ -57,7 +57,7 @@ exports.updateOne = (Model) =>
 ////////////      Get All         ///////////////////////////
 exports.getAll = (Model) =>
   catchAsync(async (req, res) => {
-    const doc = await Model.find();
+    const doc = await Model.find({ isActive: { $ne: false } });
 
     //SEND RESPONSE
     res.status(200).json({
