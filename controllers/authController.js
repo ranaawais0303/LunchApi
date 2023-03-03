@@ -23,7 +23,7 @@ const signToken = (id) => {
   );
 };
 
-///////////////////   varify Token    /////////////////////
+///////////////////   verify Token    /////////////////////
 exports.tokenVerify = catchAsync(async (req, res, next) => {
   // const { token } = req.body;
   // try {
@@ -135,7 +135,7 @@ exports.resendOTP = catchAsync(async (req, res, next) => {
     return next(new AppError("Bad Network", 404));
   }
 });
-/////////////////////////    varify email   //////////////////////////
+/////////////////////////    verify email   //////////////////////////
 /////////
 module.exports.verifyEmail = async (req, res, next) => {
   const { email, otp } = req.body;
@@ -160,7 +160,7 @@ const validateUserSignUp = async (email, otp) => {
     return [false, "Invalid OTP"];
   }
   const updatedUser = await User.findByIdAndUpdate(user._id, {
-    $set: { active: true },
+    $set: { verifiedEmail: true },
   });
   return [true, updatedUser];
 };
@@ -176,8 +176,8 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //2)Check if user exist && password is correct
   const user = await User.findOne({ email }).select("+password");
-  console.log(user.active, "===================");
-  const active = user.active;
+  console.log(user.verifiedEmail, "===================");
+  const active = user.verifiedEmail;
   process.env.JWT_EXPIRES_IN = user.tokenExp;
   console.log(process.env.JWT_EXPIRES_IN, "now this is the new expire time");
 
@@ -189,7 +189,7 @@ exports.login = catchAsync(async (req, res, next) => {
     (await user.correctPassword(password, user.password)) &&
     active === false
   ) {
-    return next(new AppError("Please varify your account ", 422));
+    return next(new AppError("Please verify your account ", 422));
   }
 
   //3)if everthing ok, send token to client
@@ -231,7 +231,6 @@ exports.forgotPass = catchAsync(async (req, res, next) => {
       message:
         "Please enter this password in password field to change the password",
     });
-
     res.send(updatedUserPassword);
   } catch (error) {
     return next(new AppError("Bad Network", 404));

@@ -37,17 +37,7 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
-  //   passwordConfirm: {
-  //     type: String,
-  //     required: [true, "Please confirm your password"],
-  //     validate: {
-  //       validator: function (el) {
-  //         //this only works on CREATE and SAVE not on update etc
-  //         return el === this.password;
-  //       },
-  //       message: "Confirm Password ({VALUE}) should be  Equal to  password",
-  //     },
-  //   },
+
   ////for otp setting
   created: {
     type: Date,
@@ -65,9 +55,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "60s",
   },
-  active: {
+  verifiedEmail: {
     type: Boolean,
     default: false,
+  },
+  adminVarified: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
   },
   otp: {
     type: String,
