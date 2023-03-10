@@ -42,7 +42,7 @@ exports.updateOne = (Model) =>
       new: true,
       runValidators: true,
     });
-    console.log(req.body, "update function");
+    console.log(req.body.id, "update function");
     if (!doc) {
       return next(new AppError("No document found with that ID"));
     }
@@ -58,13 +58,10 @@ exports.updateOne = (Model) =>
 exports.getAll = (Model) =>
   catchAsync(async (req, res) => {
     const doc = await Model.find({ isActive: { $ne: false } });
-
     //SEND RESPONSE
     res.status(200).json({
       status: "success",
       results: doc.length,
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });

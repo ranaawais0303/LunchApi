@@ -17,6 +17,7 @@ const signToken = (id) => {
   return jwt.sign(
     {
       id,
+      // role,
     },
     secret,
     { expiresIn: expireTime }
@@ -193,8 +194,10 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   //3)if everthing ok, send token to client
-  const token = signToken(user._id);
-
+  const token = signToken(
+    user._id
+    // user.role
+  );
   console.log(token);
   res.status(200).json({
     status: "Success",
