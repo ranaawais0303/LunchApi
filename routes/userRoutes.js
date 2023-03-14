@@ -1,6 +1,7 @@
 const express = require("express");
 const authController = require(`../controllers/authController`);
 const userController = require("../controllers/userController");
+const listController = require("../controllers/listController");
 //
 const router = express.Router();
 
@@ -14,7 +15,10 @@ router.get("/tokenVerify", authController.tokenVerify);
 router.post("/signup/resendOTP", authController.resendOTP);
 router.post("/forgotPassword", authController.forgotPass);
 router.post("/changePassword", authController.changePassword);
+router.post("/changePassword", authController.changePassword);
 
+router.post("/list", listController.addListItem);
+router.get("/list", listController.getListByRole);
 /////////       For User        /////////////////////////
 router.route("/").get(userController.getAllUsers);
 router
