@@ -18,9 +18,10 @@ router.post("/changePassword", authController.changePassword);
 router.post("/changePassword", authController.changePassword);
 
 router.post("/list", listController.addListItem);
-router.get("/list", listController.getListByRole);
+router.post("/getList", listController.getListByRole);
 /////////       For User        /////////////////////////
 router.route("/").get(userController.getAllUsers);
+// router.route("/getOne").get(userController.getOneUser);
 router
   .route("/")
   .patch(userController.updateUser)

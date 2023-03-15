@@ -11,18 +11,18 @@ exports.addListItem = catchAsync(async (req, res) => {
 });
 exports.getListByRole = catchAsync(async (req, res) => {
   const list = await List.find();
-  console.log(list, "list getlistby role");
   if (req.body.role === "User") {
     const arr = await list[0].items
       .map((item) => item)
       .filter((show) => show.role === "User");
     //   .filter((show) => show.role === "User");
 
-    console.log(arr, "inside if statement");
-
-    res.send(arr);
+    res.status(200).json({ status: "Success", data: arr });
   } else {
-    const arr = await list[0].items;
-    res.send(arr);
+    const arr = await list[0].items.map((item) => item);
+    res.status(200).json({
+      status: "Success",
+      data: arr,
+    });
   }
 });

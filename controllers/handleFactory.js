@@ -3,14 +3,6 @@ const AppError = require("../utils/appError");
 
 ////     Delete function for user item etc general function      /////
 
-//deactivate
-// exports.deleteMe = catchAsync(async (req, res, next) => {
-//   await User.findByIdAndUpdate(req.user.id, { active: false });
-//   res.status(204).json({
-//     status: "Success",
-//     data: null,
-//   });
-// });
 //delete
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -65,3 +57,19 @@ exports.getAll = (Model) =>
       data: doc,
     });
   });
+
+//////////   Get One        ////////////////////////////
+// exports.getOne = (Model) =>
+//   catchAsync(async (req, res) => {
+//     const doc = await Model.findById(req.body.id);
+
+//     if (!doc) {
+//       return next(new AppError("No document found with that ID", 404));
+//     }
+//     res.status(200).json({
+//       status: "success",
+//       data: {
+//         data: doc,
+//       },
+//     });
+//   });
