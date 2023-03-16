@@ -12,6 +12,10 @@ const menuItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 const MenuItem = mongoose.model("MenuItem", menuItemSchema);
 module.exports = MenuItem;

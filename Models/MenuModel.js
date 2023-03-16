@@ -12,6 +12,10 @@ const menuSchema = new mongoose.Schema({
       ref: "MenuItem",
     },
   ],
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 const Menu = mongoose.model("Menu", menuSchema);
 
