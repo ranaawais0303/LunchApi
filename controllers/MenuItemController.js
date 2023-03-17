@@ -18,3 +18,5 @@ exports.createItem = catchAsync(async (req, res) => {
 });
 exports.updateItem = factory.updateOne(MenuItem);
 exports.deleteItem = factory.deleteOne(MenuItem);
+exports.getItems = factory.getAll(MenuItem);
+exports.getOneItem = factory.getOne(MenuItem);

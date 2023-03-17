@@ -51,6 +51,7 @@ exports.getAll = (Model) =>
   catchAsync(async (req, res) => {
     const doc = await Model.find({ isActive: { $ne: false } });
     //SEND RESPONSE
+    console.log("Get All", doc);
     res.status(200).json({
       status: "success",
       results: doc.length,
@@ -59,17 +60,18 @@ exports.getAll = (Model) =>
   });
 
 //////////   Get One        ////////////////////////////
-// exports.getOne = (Model) =>
-//   catchAsync(async (req, res) => {
-//     const doc = await Model.findById(req.body.id);
+exports.getOne = (Model, popOptions) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.body.id);
+    if (popOptions) query = query.populate(popOptions);
+    //
+    const doc = await query;
 
-//     if (!doc) {
-//       return next(new AppError("No document found with that ID", 404));
-//     }
-//     res.status(200).json({
-//       status: "success",
-//       data: {
-//         data: doc,
-//       },
-//     });
-//   });
+    if (!doc) {
+      return next(new AppError("No document found with that ID", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      menu: doc,
+    });
+  });

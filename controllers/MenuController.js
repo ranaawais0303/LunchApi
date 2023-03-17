@@ -4,7 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const mongoose = require("mongoose");
 const factory = require("./handleFactory");
-
+const { ObjectId } = require("mongoose");
 ////////////////        Create Manu        //////////////////
 exports.createMenu = catchAsync(async (req, res) => {
   const { name, items } = req.body;
@@ -41,3 +41,8 @@ exports.addItemIntoMenu = catchAsync(async (req, res) => {
 
 exports.updateManu = factory.updateOne(Menu);
 exports.deleteMenu = factory.deleteOne(Menu);
+exports.getMenus = factory.getAll(Menu);
+
+/////////////////Get one Menu with populate items array /////
+//populate open the array ///
+exports.getOneMenu = factory.getOne(Menu, "items");
