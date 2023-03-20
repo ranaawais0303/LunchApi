@@ -46,3 +46,27 @@ exports.getMenus = factory.getAll(Menu);
 /////////////////Get one Menu with populate items array /////
 //populate open the array ///
 exports.getOneMenu = factory.getOne(Menu, "items");
+
+////////////////////////    update current    ///////////
+exports.updateCurr = catchAsync(async (req, res) => {
+  const { id } = req.body;
+  if (!id) {
+    return next(new AppError("Unable to update", 401));
+  }
+  const allmenu = await Menu.updateMany(
+    {
+      _id: { $ne: id },
+    },
+    { $set: { current: false } }
+  );
+  console.log("All Menus", allmenu);
+  const currentMenu = await Menu.findByIdAndUpdate(id, {
+    $set: { current: true },
+  });
+  console.log("current menu", currentMenu);
+
+  res.status(202).json({
+    status: "success",
+    data: currentMenu,
+  });
+});

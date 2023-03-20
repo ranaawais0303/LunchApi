@@ -6,6 +6,10 @@ const menuSchema = new mongoose.Schema({
     required: true,
   },
   description: String,
+  current: {
+    type: Boolean,
+    default: false,
+  },
   items: [
     {
       type: mongoose.Schema.Types.ObjectId,
