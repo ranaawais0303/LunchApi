@@ -41,7 +41,17 @@ exports.addItemIntoMenu = catchAsync(async (req, res) => {
 
 exports.updateManu = factory.updateOne(Menu);
 exports.deleteMenu = factory.deleteOne(Menu);
-exports.getMenus = factory.getAll(Menu);
+exports.getMenus = catchAsync(async (req, res) => {
+  const doc = await Menu.find({ isActive: { $ne: false } }).populate("items");
+  //SEND RESPONSE
+  console.log("Get All", doc);
+  res.status(200).json({
+    status: "success",
+    results: doc.length,
+    data: doc,
+  });
+});
+// factory.getAll(Menu);
 
 /////////////////Get one Menu with populate items array /////
 //populate open the array ///
