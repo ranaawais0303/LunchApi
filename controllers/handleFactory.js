@@ -30,11 +30,11 @@ exports.updateOne = (Model) =>
     //runValidator for schema which fixed
     //req.body mean edit body where edit any value
 
-    const doc = await Model.findByIdAndUpdate(req.body.id, req.body, {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
-    console.log(req.body.id, "update function");
+    console.log(req.params.id, "update function");
     if (!doc) {
       return next(new AppError("No document found with that ID"));
     }

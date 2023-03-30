@@ -23,7 +23,7 @@ router.post("/getList", listController.getListByRole);
 router.route("/").get(userController.getAllUsers);
 // router.route("/getOne").get(userController.getOneUser);
 router
-  .route("/")
+  .route("/:id")
   .patch(userController.updateUser)
   .delete(userController.delelteUser);
 
