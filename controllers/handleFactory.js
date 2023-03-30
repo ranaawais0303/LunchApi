@@ -6,7 +6,7 @@ const AppError = require("../utils/appError");
 //delete
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(req.body.id, {
+    const doc = await Model.findByIdAndUpdate(req.params.id, {
       isActive: false,
     });
 
