@@ -59,7 +59,7 @@ exports.getOneMenu = factory.getOne(Menu, "items");
 
 ////////////////////////    update current    ///////////
 exports.updateCurr = catchAsync(async (req, res) => {
-  const { id } = req.body;
+  const id = req.params.id;
   if (!id) {
     return next(new AppError("Unable to update", 401));
   }

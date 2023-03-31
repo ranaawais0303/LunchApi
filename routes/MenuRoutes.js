@@ -14,6 +14,6 @@ router.get("/getMenus", MenuController.getMenus);
 router.get("/getItems", MenuItemController.getItems);
 router.get("/getItem", MenuItemController.getOneItem);
 router.get("/getMenu", MenuController.getOneMenu);
-router.put("/updateCurr", MenuController.updateCurr);
+router.put("/updateCurr/:id", MenuController.updateCurr);
 
 module.exports = router;
