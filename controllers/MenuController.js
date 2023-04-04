@@ -21,7 +21,7 @@ exports.createMenu = catchAsync(async (req, res) => {
 });
 
 ///////////////     Add item into manu      //////////////
-exports.addItemIntoMenu = catchAsync(async (req, res) => {
+exports.addItemIntoMenu = catchAsync(async (req, res, next) => {
   const { menuId, itemId } = req.body;
   const itemIdExistance = await MenuItem.findById(itemId);
   if (!itemIdExistance) {
