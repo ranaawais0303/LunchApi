@@ -6,12 +6,14 @@ const mongoose = require("mongoose");
 const factory = require("./handleFactory");
 const { ObjectId } = require("mongoose");
 ////////////////        Create Manu        //////////////////
-exports.createMenu = catchAsync(async (req, res) => {
+exports.createMenu = catchAsync(async (req, res, next) => {
   const { name, items } = req.body;
-  const itemObjectIds = await items.map((id) => mongoose.Types.ObjectId(id));
+  const itemObjectIds = items
+    ? await items.map((id) => mongoose.Types.ObjectId(id))
+    : "";
   const newMenu = new Menu({
     name,
-    items: itemObjectIds,
+    items: items ? itemObjectIds : [],
   });
   if (!newMenu) {
     return next(new AppError("Unable to create Menu"));
