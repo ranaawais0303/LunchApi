@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const userRouter = require("./routes/userRoutes");
 const MenuRouter = require("./routes/MenuRoutes");
+const AddonsRouter = require("./routes/AddonsRoutes");
 const AppError = require("./utils/appError");
 
 ///Server startup
@@ -24,6 +25,7 @@ app.use(express.json({ limit: "10kb" }));
 //Mounting the router
 app.use("/api/users", userRouter);
 app.use("/api/Menu", MenuRouter);
+app.use("/api/Addons", AddonsRouter);
 
 //unhandled url or route came from moslty catchAsync
 app.all("*", (req, res, next) => {
