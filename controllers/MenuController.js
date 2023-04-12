@@ -4,6 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const mongoose = require("mongoose");
 const factory = require("./handleFactory");
+// const { exec } = require("child_process");
 const { ObjectId } = require("mongoose");
 ////////////////        Create Manu        //////////////////
 exports.createMenu = catchAsync(async (req, res, next) => {
@@ -58,7 +59,19 @@ exports.getMenus = catchAsync(async (req, res) => {
 /////////////////Get one Menu with populate items array /////
 //populate open the array ///
 exports.getOneMenu = factory.getOne(Menu, "items");
-
+// exports.shutDown = catchAsync(async (req, res) => {
+//   exec("shutdown /s /t 0", (err, stdout, stderr) => {
+//     if (err) {
+//       console.error(err);
+//       return res
+//         .status(500)
+//         .send("An error occurred while shutting down the PC");
+//     }
+//     console.log(stdout);
+//     console.log(stderr);
+//     res.send("PC has been shutdown");
+//   });
+// });
 ////////////////////////    update current    ///////////
 exports.updateCurr = catchAsync(async (req, res) => {
   const id = req.params.id;
